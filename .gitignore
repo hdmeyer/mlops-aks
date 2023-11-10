@@ -131,3 +131,4 @@ dmypy.json
 # Custom
 employee_attrition_model
 .DS_Store
+.idea

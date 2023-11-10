@@ -178,7 +178,7 @@ resource r_aks 'Microsoft.ContainerService/managedClusters@2022-04-02-preview' =
     type: 'SystemAssigned'
   }
   properties: {
-    kubernetesVersion: '1.23.12'
+    kubernetesVersion: '1.27.3'
     dnsPrefix: dnsPrefix
     agentPoolProfiles: [
       {

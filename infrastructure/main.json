@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.13.1.58284",
-      "templateHash": "18065729359224622542"
+      "version": "0.23.1.45101",
+      "templateHash": "5408347611264974035"
     }
   },
   "parameters": {
@@ -66,7 +66,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "m_databricks",
       "properties": {
         "expressionEvaluationOptions": {
@@ -87,8 +87,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.13.1.58284",
-              "templateHash": "6605471823497372116"
+              "version": "0.23.1.45101",
+              "templateHash": "14886191450078155941"
             }
           },
           "parameters": {
@@ -253,11 +253,11 @@
               ]
             },
             {
-              "condition": "[equals(parameters('deployDataLakeAccount'), true())]",
               "copy": {
                 "name": "r_dataLakePrivateContainer",
                 "count": "[length(variables('privateContainerNames'))]"
               },
+              "condition": "[equals(parameters('deployDataLakeAccount'), true())]",
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2021-02-01",
               "name": "[format('{0}/default/{1}', parameters('dataLakeAccountName'), variables('privateContainerNames')[copyIndex()])]",
@@ -271,7 +271,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "m_microservices_01",
       "properties": {
         "expressionEvaluationOptions": {
@@ -301,8 +301,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.13.1.58284",
-              "templateHash": "4754783924999976762"
+              "version": "0.23.1.45101",
+              "templateHash": "9325931741094096296"
             }
           },
           "parameters": {
@@ -844,7 +844,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "m_microservices_02",
       "properties": {
         "expressionEvaluationOptions": {
@@ -874,10 +874,10 @@
             "value": true
           },
           "containerRegistryName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'm_microservices_01'), '2020-10-01').outputs.containerRegistryName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'm_microservices_01'), '2022-09-01').outputs.containerRegistryName.value]"
           },
           "logAnalyticsWorkspaceName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'm_microservices_01'), '2020-10-01').outputs.logAnalyticsWorkspaceName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'm_microservices_01'), '2022-09-01').outputs.logAnalyticsWorkspaceName.value]"
           }
         },
         "template": {
@@ -886,8 +886,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.13.1.58284",
-              "templateHash": "4754783924999976762"
+              "version": "0.23.1.45101",
+              "templateHash": "9325931741094096296"
             }
           },
           "parameters": {

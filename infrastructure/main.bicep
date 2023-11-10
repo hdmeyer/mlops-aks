@@ -50,17 +50,17 @@ module m_microservices_01 './modules/microservices.bicep' = {
   }
 }
 
-module m_microservices_02 './modules/microservices.bicep' = {
-  name: 'm_microservices_02'
-  params: {
-    resourceInstance: '02'
-    location: resourceLocation
-    vNetIPAddressPrefixes: vNetIPAddressPrefixesForSecondDeployment
-    subnetAksIpAddressPrefix: subnetAksIpAddressPrefixForSecondDeployment
-    subnetAppGwIpAddressPrefix: subnetAppGwIpAddressPrefixForSecondDeployment
-    useExistingContainerRegistry: true
-    useExistingLogAnalyticsWorkspace: true
-    containerRegistryName: m_microservices_01.outputs.containerRegistryName
-    logAnalyticsWorkspaceName: m_microservices_01.outputs.logAnalyticsWorkspaceName
-  }
-}
+//module m_microservices_02 './modules/microservices.bicep' = {
+//  name: 'm_microservices_02'
+//  params: {
+//    resourceInstance: '02'
+//    location: resourceLocation
+//    vNetIPAddressPrefixes: vNetIPAddressPrefixesForSecondDeployment
+//    subnetAksIpAddressPrefix: subnetAksIpAddressPrefixForSecondDeployment
+//    subnetAppGwIpAddressPrefix: subnetAppGwIpAddressPrefixForSecondDeployment
+//    useExistingContainerRegistry: true
+//    useExistingLogAnalyticsWorkspace: true
+//    containerRegistryName: m_microservices_01.outputs.containerRegistryName
+//    logAnalyticsWorkspaceName: m_microservices_01.outputs.logAnalyticsWorkspaceName
+//  }
+//}
