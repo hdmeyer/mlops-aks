@@ -58,10 +58,10 @@ param subnetAksName string = 'akssubnet'
 param subnetAppGwName string = 'appgwsubnet'
 
 @description('AKS Subnet IP Address Prefix')
-param subnetAksIpAddressPrefix string = '192.168.0.0/24'
+param subnetAksIpAddressPrefix string = '192.168.0.0/22'
 
 @description('App Gateway IP Address Prefix')
-param subnetAppGwIpAddressPrefix string = '192.168.1.0/24'
+param subnetAppGwIpAddressPrefix string = '192.168.4.0/8'
 
 //----------------------------------------------------------------------
 
@@ -178,7 +178,7 @@ resource r_aks 'Microsoft.ContainerService/managedClusters@2022-04-02-preview' =
     type: 'SystemAssigned'
   }
   properties: {
-    kubernetesVersion: '1.27.3'
+    kubernetesVersion: '1.27.3' //Better to have this equal to the orchestratorVersion
     dnsPrefix: dnsPrefix
     agentPoolProfiles: [
       {
@@ -191,10 +191,10 @@ resource r_aks 'Microsoft.ContainerService/managedClusters@2022-04-02-preview' =
         vnetSubnetID: r_subNetAks.id
         maxPods: 110
         type: 'VirtualMachineScaleSets'
-        maxCount: 2
+        maxCount: 5
         minCount: 1
         enableAutoScaling: true
-        orchestratorVersion: '1.22.6'
+        orchestratorVersion: '1.27.3'
         enableNodePublicIP: false
         mode: 'System'
         osType: 'Linux'

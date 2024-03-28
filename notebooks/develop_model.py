@@ -1,22 +1,22 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC # Develop Machine Learning Model
-# MAGIC 
+# MAGIC
 # MAGIC This notebook aims to develop and register an MLFlow Model for deployment consisting of:
 # MAGIC - a machine learning model to predict the liklihood of employee attrition.
 # MAGIC - a statistical model to determine data drift in features
 # MAGIC - a statistical model to determine outliers in features
-# MAGIC 
+# MAGIC
 # MAGIC This example uses the [`IBM HR Analytics Employee Attrition & Performance` dataset](https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset) available from Kaggle.
-# MAGIC 
+# MAGIC
 # MAGIC > Ensure you have configured your cluster to export your Kaggle username and token to the environment to use the Kaggle API. For reference see [Kaggle API Credentials](https://github.com/Kaggle/kaggle-api#api-credentials).
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC #### Import dependencies and pre-process data data
-# MAGIC 
+# MAGIC
 # MAGIC The dataset will be downloaded from Kaggle and and split into samples for model training and testing.
 
 # COMMAND ----------
@@ -25,7 +25,8 @@ import os
 from pprint import pprint
 
 import joblib
-import kaggle
+#import kaggle
+from kaggle.api.kaggle_api_extended import KaggleApi
 import mlflow
 import mlflow.pyfunc
 import numpy as np
@@ -43,18 +44,38 @@ from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
+import zipfile
 
-# Download dataset
-dataset_name = "pavansubhasht/ibm-hr-analytics-attrition-dataset"
-kaggle.api.authenticate()
-kaggle.api.dataset_download_files(
-    dataset_name, path='/tmp', unzip=True)
 
 # COMMAND ----------
 
+#Connect to Kaggle
+# api = KaggleApi()
+# api.authenticate()
+
+
+# COMMAND ----------
+
+! ls /dbfs/FileStore/datasets/attrition/
+
+# COMMAND ----------
+
+# This doesnt work for me because of an SSL issue. I manually uploaded the dataset to DBFS
+# dataset_name = "pavansubhasht/ibm-hr-analytics-attrition-dataset"
+# api.dataset_download_files(
+#     dataset_name, path='/tmp', unzip=True)
+
+# COMMAND ----------
+
+# Unzip the file
+with zipfile.ZipFile("/dbfs/FileStore/datasets/archive.zip","r") as zip_ref:
+    zip_ref.extractall("/dbfs/FileStore/datasets/attrition/")
+
+
+# COMMAND ----------
 
 # Read dataset
-df_attrition = pd.read_csv("/tmp/WA_Fn-UseC_-HR-Employee-Attrition.csv")
+df_attrition = pd.read_csv("/dbfs/FileStore/datasets/attrition/WA_Fn-UseC_-HR-Employee-Attrition.csv")
 df_attrition.head()
 
 # COMMAND ----------
@@ -89,10 +110,10 @@ X_train, X_test, y_train, y_test = train_test_split(
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC #### Build classifier
-# MAGIC 
-# MAGIC A machine learning model will be built to predict the liklihood of employee attrition.
+# MAGIC
+# MAGIC A machine learning model will be built to predict the likelihood of employee attrition.
 
 # COMMAND ----------
 
@@ -183,9 +204,9 @@ client.download_artifacts(best_run.run_id, "model", local_dir)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC #### Build data drift model
-# MAGIC 
+# MAGIC
 # MAGIC A statistical model will be built to determine data drift in features.
 
 # COMMAND ----------
@@ -233,9 +254,9 @@ with mlflow.start_run(run_name="employee-attrition-drift") as run:
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC #### Build outlier model
-# MAGIC 
+# MAGIC
 # MAGIC A statistical model will be built to determine outliers in numeric features.
 
 # COMMAND ----------
@@ -278,9 +299,9 @@ with mlflow.start_run(run_name="employee-attrition-outlier") as run:
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC #### Register MLFlow Model Artifact
-# MAGIC 
+# MAGIC
 # MAGIC Develop a `python_function` model object which references the classifer, drift model, and outlier model. This model artifact will be deployed as a web service.
 
 # COMMAND ----------
@@ -386,7 +407,3 @@ loaded_attrition_model = mlflow.pyfunc.load_model(
 # Display output
 model_output = loaded_attrition_model.predict(X_test.head(5))
 pprint(model_output, width=120, compact=True)
-
-# COMMAND ----------
-
-

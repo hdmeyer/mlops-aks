@@ -1,0 +1,41 @@
+# TODO: Require nginx chart installed before using this configuration
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: employee-attrition-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: employee-attrition-service
+                port:
+                  number: 5000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: employee-attrition-ingress-static
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /static(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: employee-attrition-service
+                port:
+                  number: 5000

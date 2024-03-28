@@ -14,41 +14,31 @@ spec:
         app: employee-attrition-api
     spec:
       containers:
-        - image: ${IMAGE_NAME}:${IMAGE_TAG}
-          imagePullPolicy: Always
+        - image: crf2zdht01.azurecr.io/employee-attrition-amd64:latest
+          command: ["uvicorn"]
+          args: ["app.main:app"]
+          resources: {}
+          env:
+          - name: LOG_LEVEL
+            value: debug
           name: employee-attrition-api
           ports:
-            - containerPort: 5000
+            - containerPort: 8000
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: acr-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: employee-attrition-api
-  name: employee-attrition-api
+    app: employee-attrition-service
+  name: employee-attrition-service
 spec:
   ports:
     - protocol: "TCP"
-      port: 5000
-      targetPort: 5000
+      port: 8000
+      targetPort: 8000
   selector:
     app: employee-attrition-api
-  type: LoadBalancer
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: employee-attrition-api
-  annotations:
-    kubernetes.io/ingress.class: azure/application-gateway
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: employee-attrition-api
-                port:
-                  number: 5000
+  type: ClusterIP
